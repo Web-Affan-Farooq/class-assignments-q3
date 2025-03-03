@@ -1,0 +1,2 @@
+# for ignoring __pycache directory and byte code
+__pycache__/
