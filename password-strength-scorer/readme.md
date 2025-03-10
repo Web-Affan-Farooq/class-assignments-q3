@@ -7,3 +7,5 @@ install it as :
 ```bash 
 pip install zxcvbn-python
 ```
+
+[Check it here ](https://password-strength-meter-muhammadaffan.streamlit.app/)
