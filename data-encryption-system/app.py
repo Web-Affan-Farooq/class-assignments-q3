@@ -1,18 +1,12 @@
 import streamlit as st
 from cryptography.fernet import Fernet
-from dotenv import load_dotenv
-import os
+
+# from dotenv import load_dotenv
 import json
 from datetime import date
 
-load_dotenv()
-
-key_from_env = os.getenv("KEY")
-try:
-    f = Fernet(key_from_env.encode())
-    # st.success("Key is valid, Fernet initialized!")
-except Exception as e:
-    st.error(f"Fernet error: {e}")
+key = st.secrets["KEY"]
+f = Fernet(key.encode())
 
 if (
     "users" not in st.session_state
@@ -195,11 +189,12 @@ def show_data():
 
 
 def account_info(user):
-    decrypted = f.decrypt(user["password"]).decode()
-    json_parsed_string = json.loads(decrypted)
+    decrypted_password = f.decrypt(user["password"]).decode()
+    st.write(decrypted_password)
+    # json_parsed_string = json.loads(decrypted)
 
     st.write(f"#### Username : {user['name']}")
-    st.write(f"#### Account password : {json_parsed_string}")
+    st.write(f"#### Account password : {decrypted_password}")
 
     if st.button("Edit credentials"):
         st.session_state.edit_mode = True
@@ -207,7 +202,7 @@ def account_info(user):
     if st.session_state.get("edit_mode", False):
         name = st.text_input("Your username:", value=user["name"], key="edit_name")
         password = st.text_input(
-            "Your password:", value=json_parsed_string, key="edit_pass"
+            "Your password:", value=decrypted_password, key="edit_pass"
         )
 
         if st.button("Save", key="save_button"):
